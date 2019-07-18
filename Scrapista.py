@@ -24,7 +24,7 @@ def isAlink(link):
     suffixe=[".com/",".fr/",".org/",".bj/",".it/",".xyz/",".de/",".co/",".ca/",".be/","http://"]
     for suf in suffixe:
         if suf in link:
-            return True;
+            return True
 
 
 def getWebSiteRoot(link):
@@ -49,6 +49,7 @@ def recursiveSearch(link,keyword):
     queue.append(link)
     for link in queue:   
         try:         
+            print(link)
             sock = urllib.request.urlopen(link) 
             htmlSource = sock.read()                            
             sock.close()                                        
@@ -58,15 +59,15 @@ def recursiveSearch(link,keyword):
             for p in soup.find_all('a'):
                 pget=p.get("href")
                 if(visitedLink.count(pget)==0):
-                    if("http" in str(pget)):# and ("." in str(pget))
+                    if(("http" in str(pget)) and ("." in str(pget)) and getWebSiteRoot(link) in str(pget) ):# and ("." in str(pget))
                         if(pget not in queue):
                             queue.append(pget)
                     elif len(str(pget))>0:
                         if((str(pget))[0]=="/"):
-                            if((str(getWebSiteRoot(link))+(str(pget))[1:len(str(pget))] not in queue) and (getWebSiteRoot(link) in str(getWebSiteRoot(link))+(str(pget))[1:len(str(pget))])):
-                                queue.append(str(getWebSiteRoot(link))+(str(pget))[1:len(str(pget))])
+                            if((str(getWebSiteRoot(link))+(str(pget))[1:] not in queue) and (getWebSiteRoot(link) in str(getWebSiteRoot(link))+(str(pget))[1:])):
+                                queue.append(str(getWebSiteRoot(link))+(str(pget))[1:])
             for keyW in searchByKeyWord(htmlSource,keyword):
-                print(keyW+"is found on "+link)
+                print(keyW+" is found on "+link)
         except:
             pass
     
